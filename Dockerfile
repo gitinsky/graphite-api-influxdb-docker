@@ -18,6 +18,7 @@ ONBUILD RUN chmod 0644 /etc/graphite-api.yaml
 
 # init scripts
 ADD graphite-api.sh /graphite-api.sh
+ADD patch /patch
 
 EXPOSE 8000
 
@@ -40,4 +41,5 @@ ONBUILD ENV PATH=/srv/graphite-pypy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin
 RUN pip install gunicorn graphite-api[sentry,cyanite] graphite-influxdb Flask-Cache statsd raven blinker elasticsearch && \
     pip uninstall -y graphite-api && \
     pip install https://github.com/Dieterbe/graphite-api/tarball/support-templates2 && \
+    cd /srv/graphite-pypy/site-packages && patch -p2 < /patch && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
