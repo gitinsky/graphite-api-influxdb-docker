@@ -30,7 +30,8 @@ RUN echo 'deb http://ppa.launchpad.net/pypy/ppa/ubuntu trusty main' >> /etc/apt/
     locale-gen en_US.UTF-8 && dpkg-reconfigure locales && \
     chmod +x /graphite-api.sh && \
     mkdir /var/log/graphite-api && \
-    virtualenv -p /usr/bin/pypy /srv/graphite-pypy
+    virtualenv -p /usr/bin/pypy /srv/graphite-pypy && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # equivalent to what source bin/activate, minus adjusting the shell prompt (PS1)
 ENV VIRTUAL_ENV=/srv/graphite-pypy
@@ -42,4 +43,4 @@ RUN pip install gunicorn graphite-api[sentry,cyanite] graphite-influxdb Flask-Ca
     pip uninstall -y graphite-api && \
     pip install https://github.com/Dieterbe/graphite-api/tarball/support-templates2 && \
     cd /srv/graphite-pypy/site-packages && patch -p2 < /patch && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
